@@ -1,0 +1,67 @@
+<template>
+<div id="app">
+  <table>
+    <thead>
+      <tr>
+        <th @click="sort('name')">Name</th>
+        <th @click="sort('age')">Age</th>
+        <th @click="sort('breed')">Breed</th>
+        <th @click="sort('gender')">Gender</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(cat,index) in sortedCats" :key="index">
+        <td>{{cat.name}}</td>
+        <td>{{cat.age}}</td>
+        <td>{{cat.breed}}</td>
+        <td>{{cat.gender}}</td>
+      </tr>
+    </tbody>
+  </table>
+  
+</div>
+
+</template>
+
+<script>
+export default {
+  name: 'HelloWorld',
+  computed: {
+    sortedCats:function() {
+      return this.cats.slice().sort((a,b) => {
+        let modifier = 1;
+        if(this.currentSortDir === 'desc') modifier = -1;
+        if(a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+        if(a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+      });
+    }
+  },
+  data () {
+    return {
+      cats:[],
+      currentSort:'name',
+      currentSortDir:'asc'
+    }
+  },
+  created: function () {
+    fetch('https://api.myjson.com/bins/s9lux')
+    .then(res => res.json())
+    .then(res => {
+      this.cats = res
+    })
+  },
+  methods: {
+    sort: function (s) {
+      //if s == current sort, reverse
+      if(s === this.currentSort) {
+      this.currentSortDir = this.currentSortDir==='asc'?'desc':'asc';
+      }
+      this.currentSort = s;
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
